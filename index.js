@@ -1,7 +1,5 @@
 const body = document.body
 
-console.log(body)
-
 const canvas1 = document.createElement('canvas')
 const canvas2 = document.createElement('canvas')
 
@@ -29,11 +27,16 @@ body.appendChild(canvas2)
 let position1 = 100
 let position2 = 100
 
+let renderFrames = 0
+let freshedFrames1 = 0
+let freshedFrames2 = 0
 
 function renderInTwoFrame() {
     position2 += 8
     position1 += 4
-
+    renderFrames ++ 
+    freshedFrames1 ++
+    freshedFrames2 ++
     if (position2 > 1800) {
         position2 = 100
     }
@@ -41,24 +44,28 @@ function renderInTwoFrame() {
     if (position1 > 1800) {
         position1 = 100
     }
-    renderCtx(ctx1, position1)
-    renderCtx(ctx2, position2)
+    renderCtx(ctx1, position1, freshedFrames1)
+    renderCtx(ctx2, position2, freshedFrames2)
     requestAnimationFrame(() => {
         position1 += 4
+        renderFrames ++ 
+        freshedFrames1 ++
 
         if (position1 > 1800) {
             position1 = 100
         }
-        renderCtx(ctx2, position2)
-        renderCtx(ctx1, position1)
+        renderCtx(ctx1, position1, freshedFrames1)
+        renderCtx(ctx2, position2, freshedFrames2)
         requestAnimationFrame(() => {
             renderInTwoFrame()
         })
     })
 }
 
-function renderCtx(ctx, position) {
+function renderCtx(ctx, position, frames) {
     ctx.clearRect(0, 0, width, height)
+    ctx.font = '50px Georgia'
+    ctx.fillText(`当前输出到了第${renderFrames}帧，其中重新渲染了${frames}帧`, 100, 50)
     ctx.fillStyle = '#FF0000'
     ctx.fillRect(position, 100, 20, 150)
 }
